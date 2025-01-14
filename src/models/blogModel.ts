@@ -1,5 +1,8 @@
 export interface BlogModel {
   title: string;
-  picture: string;
   description: string;
+  techTitle: string;
+  techDesc: string;
+  location: string;
+  email: string;
 }

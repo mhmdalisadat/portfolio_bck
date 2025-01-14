@@ -5,10 +5,9 @@ import { WorksModel } from "../models";
 export const getWorksData = (req: Request, res: Response) => {
   const worksData: WorksModel[] = [
     {
-      title: "Mohammad Ali Sadat",
-      picture: "https://via.placeholder.com/150",
-      description: "FRONT-END DEVELOPER",
-      link: "https://www.google.com",
+      title: "isatiscrowd",
+      description: "IsatisCrowd.ir is a crowdfunding platform based in Iran, operated by Isatis Pooya Investment Group. It facilitates financial support for innovative projects and startups by connecting them with potential investors. The platform emphasizes transparency and efficiency in the fundraising process, aiming to foster economic development and entrepreneurial growth within the region.",
+      link: "https://isatiscrowd.com",
       category: "Web Development",
     },
   ];
