@@ -11,7 +11,6 @@ export const getWorksData = (req: Request, res: Response) => {
       company: "Isatis Pooya Investment Group",
       startYear: "2023",
       endYear: "current",
-
     },
     {
       title: "Frelancer Frontend Developer",
@@ -21,7 +20,6 @@ export const getWorksData = (req: Request, res: Response) => {
       company: "Frelancer",
       startYear: "2021",
       endYear: "2023",
-  
     },
     {
       title: "fullstack developer",

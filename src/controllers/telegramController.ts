@@ -5,9 +5,19 @@ import {
   IContactRequest,
   IContactResponse,
 } from "../interfaces/Contact.interface";
-import { Contact } from "../models/contactModel";
+import { Contact, IContact } from "../models/contactModel";
 
-const token = "7396199760:AAFVE3sxUtr0sHwvptYCBQ8_qPstElCcdz4";
+// توکن رو از env میخونیم
+const token = process.env.TELEGRAM_BOT_TOKEN || "";
+if (!token) {
+  throw new Error("TELEGRAM_BOT_TOKEN is not set in environment variables");
+}
+
+// آی‌دی ادمین برای ارسال پیام‌ها
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || "";
+if (!ADMIN_CHAT_ID) {
+  throw new Error("ADMIN_CHAT_ID is not set in environment variables");
+}
 
 // تنظیمات پراکسی SOCKS
 const socksAgent = new SocksProxyAgent("socks5h://127.0.0.1:10808");
@@ -21,43 +31,68 @@ const bot = new TelegramBot(token, {
 
 console.log("Telegram bot is starting with SOCKS proxy...");
 
-// آی‌دی ادمین برای ارسال پیام‌ها
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || "";
+// تعریف type های request و response
+type ContactRequest = Request<
+  {},
+  {},
+  {
+    name: string;
+    email: string;
+    phone: string;
+    message: string;
+  }
+>;
+
+type ContactResponse = Response<{
+  success: boolean;
+  message: string;
+  data?: IContact;
+}>;
 
 // دریافت اطلاعات فرم و ارسال به تلگرام
 export const sendContactToTelegram = async (
-  req: Request<{}, {}, IContactRequest>,
-  res: Response<IContactResponse>
+  req: ContactRequest,
+  res: ContactResponse
 ) => {
-  const { email, phone, message } = req.body;
+  const { name, email, phone, message } = req.body;
+  console.log("Received contact request:", { name, email, phone, message });
 
   try {
+    // ذخیره در دیتابیس
     const newContact = new Contact({
+      name,
       email,
       phone,
       message,
     });
     await newContact.save();
+    console.log("Contact saved to database:", newContact);
 
-    const text = `📥 درخواست همکاری جدید دریافت شد:
+    // ارسال به تلگرام
+    const text = `📥 درخواست همکاری جدید:
+- 👤 نام: ${name}
 - ✉️ ایمیل: ${email}
 - 📱 شماره تماس: ${phone}
-- 📝 پیام: ${message}
-- 🕒 زمان: ${new Date().toLocaleString("fa-IR")}`;
+- 📝 پیام: ${message}`;
 
-    await bot.sendMessage(ADMIN_CHAT_ID, text);
+    try {
+      await bot.sendMessage(ADMIN_CHAT_ID, text);
+      console.log("Message sent to Telegram successfully");
+    } catch (telegramError) {
+      console.error("Telegram sending failed:", telegramError);
+      // Continue execution even if Telegram fails
+    }
 
     res.status(200).json({
       success: true,
-      message: "درخواست شما با موفقیت ثبت شد. به زودی با شما تماس خواهیم گرفت.",
+      message: "درخواست شما با موفقیت ثبت شد",
       data: newContact.toObject(),
     });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error details:", error);
     res.status(500).json({
       success: false,
-      message:
-        "متأسفانه در ثبت درخواست شما مشکلی پیش آمده. لطفاً دوباره تلاش کنید.",
+      message: "خطا در ثبت درخواست. لطفا دوباره تلاش کنید",
     });
   }
 };

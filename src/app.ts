@@ -1,8 +1,17 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { Request, Response } from "express";
 import cors from "cors";
 import { landingRoutes } from "./routes/landingRoutes";
-import { blogRoutes, catalogRoutes, worksRoutes } from "./routes";
+import {
+  blogRoutes,
+  catalogRoutes,
+  contactRoutes,
+  worksRoutes,
+} from "./routes";
 import { telegramRoutes } from "./routes/telgramRoutes";
+import connectDB from "./config/database";
 
 const app = express();
 const port = process.env.PORT || 3004;
@@ -29,6 +38,16 @@ app.use("/api", telegramRoutes);
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });
 });
--app.listen(port, () => {
-  console.log(`Server running at ${serverUrl}`);
+
+// اتصال به دیتابیس
+connectDB()
+  .then(() => {
+    console.log("✅ Database setup completed");
+  })
+  .catch((err) => {
+    console.error("❌ Database setup failed:", err);
+  });
+
+app.listen(port, () => {
+  console.log(`🚀 Server is running on port ${port}`);
 });

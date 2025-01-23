@@ -2,6 +2,7 @@ export interface IContactRequest {
   email: string;
   phone: string;
   message: string;
+  name: string;
 }
 
 export interface IContactResponse {
