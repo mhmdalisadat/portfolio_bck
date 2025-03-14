@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import TelegramBot from "node-telegram-bot-api";
 import { Contact, IContact } from "../models/contactModel";
 
-// توکن و چت آیدی از env
 const token = process.env.TELEGRAM_BOT_TOKEN || "";
 if (!token) {
   throw new Error("TELEGRAM_BOT_TOKEN is not set in environment variables");
@@ -13,12 +12,11 @@ if (!ADMIN_CHAT_ID) {
   throw new Error("ADMIN_CHAT_ID is not set in environment variables");
 }
 
-// بات تلگرام بدون پراکسی
+// بدون پراکسی
 const bot = new TelegramBot(token, { polling: true });
 
 console.log(`Telegram bot is starting on ${process.env.SERVER_URL}`);
 
-// تعریف تایپ‌ها برای درخواست و پاسخ
 type ContactRequest = Request<
   {},
   {},
@@ -30,7 +28,6 @@ type ContactResponse = Response<{
   data?: IContact;
 }>;
 
-// تابع ارسال فرم به تلگرام
 export const sendContactToTelegram = async (
   req: ContactRequest,
   res: ContactResponse
@@ -39,12 +36,10 @@ export const sendContactToTelegram = async (
   console.log("Received contact request:", { name, email, phone, message });
 
   try {
-    // ذخیره توی دیتابیس
     const newContact = new Contact({ name, email, phone, message });
     await newContact.save();
     console.log("Contact saved to database:", newContact);
 
-    // ارسال به تلگرام
     const text = `📥 درخواست همکاری جدید:
 - 👤 نام: ${name}
 - ✉️ ایمیل: ${email}
@@ -56,7 +51,6 @@ export const sendContactToTelegram = async (
       console.log("Message sent to Telegram successfully");
     } catch (telegramError) {
       console.error("Telegram sending failed:", telegramError);
-      // ادامه اجرا حتی اگه تلگرام خطا بده
     }
 
     res.status(200).json({
@@ -73,7 +67,6 @@ export const sendContactToTelegram = async (
   }
 };
 
-// پیام خوشامدگویی
 bot.onText(/\/start/, (msg) => {
   console.log("Received /start command from:", msg.chat.id);
   bot
@@ -85,7 +78,6 @@ bot.onText(/\/start/, (msg) => {
     .catch((error) => console.error("Error sending welcome message:", error));
 });
 
-// هندل کردن خطاها
 bot.on("error", (error) => {
   console.error("Telegram bot error:", error);
 });
@@ -94,7 +86,6 @@ bot.on("polling_error", (error) => {
   console.error("Polling error:", error);
 });
 
-// پاسخ خودکار به پیام‌ها
 bot.on("message", (msg) => {
   if (msg.text && !msg.text.startsWith("/")) {
     bot.sendMessage(
