@@ -11,7 +11,8 @@
     "socks-proxy-agent": "^8.0.5"
   },
   "scripts": {
-    "start": "ts-node src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js",
     "dev": "ts-node src/app.ts"
   },
   "devDependencies": {

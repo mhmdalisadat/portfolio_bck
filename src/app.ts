@@ -10,44 +10,59 @@ import {
   contactRoutes,
   worksRoutes,
 } from "./routes";
-import { telegramRoutes } from "./routes/telgramRoutes";
+import { sendContactToTelegram } from "./controllers"; // مستقیم تابع رو ایمپورت می‌کنیم
 import connectDB from "./config/database";
 
 const app = express();
-const port = process.env.PORT || 3004;
-const serverUrl = process.env.SERVER_URL || "http://127.0.0.1:3004";
+const port = process.env.PORT || 9060;
+const serverUrl = process.env.SERVER_URL || "http://141.11.182.146:9060";
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: [
+      "http://141.11.182.146:8080", // فرانت‌اند روی سرور (پورت 8080 که توی docker-compose تنظیم کردیم)
+      "http://localhost:5173", // برای تست لوکال
+    ],
     credentials: true,
   })
 );
 app.use(express.json());
 
+// میدلور لاگ درخواست‌ها
 app.use((req: Request, res: Response, next) => {
   console.log(`${req.method} ${req.url}`);
   next();
 });
 
+// روت‌ها
 app.use("/api", landingRoutes);
 app.use("/api", catalogRoutes);
 app.use("/api", blogRoutes);
 app.use("/api", worksRoutes);
-app.use("/api", telegramRoutes);
+app.post("/api/contact", sendContactToTelegram); // روت تلگرام رو مستقیم استفاده می‌کنیم
+
+// روت تست
+app.get("/api", (req: Request, res: Response) => {
+  res.json({ message: "Hello from backend!" });
+});
+
+// خطای 404
 app.use((req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-// اتصال به دیتابیس
-connectDB()
-  .then(() => {
+// اتصال به دیتابیس و استارت سرور
+const startServer = async () => {
+  try {
+    await connectDB(); // صبر می‌کنیم تا دیتابیس وصل بشه
     console.log("✅ Database setup completed");
-  })
-  .catch((err) => {
+    app.listen(port, () => {
+      console.log(`🚀 Server is running on ${serverUrl}`);
+    });
+  } catch (err) {
     console.error("❌ Database setup failed:", err);
-  });
+    process.exit(1); // اگه دیتابیس وصل نشد، سرور متوقف بشه
+  }
+};
 
-app.listen(port, () => {
-  console.log(`🚀 Server is running on port ${port}`);
-});
+startServer();
