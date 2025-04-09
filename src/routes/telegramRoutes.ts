@@ -19,6 +19,6 @@ interface IContactResponse {
   data?: IContact;
 }
 
-router.post("/send-contact", sendContactToTelegram as any); // موقتاً از any استفاده می‌کنیم
+router.post("/send-contact", sendContactToTelegram);
 
 export const telegramRoutes = router;

@@ -3,14 +3,13 @@ dotenv.config();
 
 import express, { Request, Response } from "express";
 import cors from "cors";
-import { landingRoutes } from "./routes/landingRoutes";
 import {
   blogRoutes,
   catalogRoutes,
-  contactRoutes,
   worksRoutes,
+  telegramRoutes,
+  landingRoutes,
 } from "./routes";
-import { sendContactToTelegram } from "./controllers/telegramController";
 import connectDB from "./config/database";
 
 const app = express();
@@ -29,7 +28,11 @@ app.use(
 app.use(express.json());
 
 app.use((req: Request, res: Response, next) => {
-  console.log(`${req.method} ${req.url}`);
+  console.log(`[DEBUG] Incoming request:`);
+  console.log(`- Method: ${req.method}`);
+  console.log(`- URL: ${req.url}`);
+  console.log(`- Path: ${req.path}`);
+  console.log(`- Body:`, req.body);
   next();
 });
 
@@ -37,7 +40,7 @@ app.use("/api", landingRoutes);
 app.use("/api", catalogRoutes);
 app.use("/api", blogRoutes);
 app.use("/api", worksRoutes);
-app.post("/api/contact", sendContactToTelegram);
+app.use("/api", telegramRoutes);
 
 app.get("/api", (req: Request, res: Response) => {
   res.json({ message: "Hello from backend!" });
