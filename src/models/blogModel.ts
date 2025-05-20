@@ -5,4 +5,6 @@ export interface BlogModel {
   techDesc: string;
   location: string;
   email: string;
+  passion: string;
+  phone: string;
 }
