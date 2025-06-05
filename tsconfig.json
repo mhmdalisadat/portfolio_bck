@@ -7,8 +7,8 @@
     "strict": true, // چک تایپ سخت‌گیرانه
     "esModuleInterop": true, // برای سازگاری با ماژول‌های CommonJS
     "forceConsistentCasingInFileNames": true, // حساسیت به بزرگ و کوچک بودن حروف
-    "skipLibCheck": true // رد کردن چک تایپ فایل‌های .d.ts
+    "skipLibCheck": true 
   },
-  "include": ["src/**/*"], // فقط فایل‌های داخل src رو کامپایل کن
-  "exclude": ["node_modules", "dist"] // این پوشه‌ها رو نادیده بگیر
+  "include": ["src/**/*"], 
+  "exclude": ["node_modules", "dist"] 
 }
