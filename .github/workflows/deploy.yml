@@ -21,7 +21,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "🚀 Start Backend Deployment"
-
             cd /var/www/portfolio/bck/
 
             echo "🔄 Updating repository..."
@@ -30,12 +29,15 @@ jobs:
             git pull origin main || { echo "❌ Git pull failed"; exit 1; }
 
             echo "⚙️ Building backend container..."
-            docker-compose build backend
+            docker compose build backend --no-cache
 
-            echo "🚢 Restarting backend container..."
-            docker-compose up -d --no-deps backend
+            echo "🧹 Cleaning up old containers..."
+            docker compose down
+
+            echo "🚢 Starting backend container..."
+            docker compose up -d backend
 
             echo "📦 Container Status:"
-            docker-compose ps backend
+            docker compose ps
 
             echo "✅ Backend deployment completed"
