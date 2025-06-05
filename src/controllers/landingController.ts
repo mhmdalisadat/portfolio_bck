@@ -7,7 +7,7 @@ export const getLandingData = (req: Request, res: Response) => {
     heroDescription: "Building Products & Brands",
     email: "mohammadalisadat.20@gmail.com",
     mobile: "+989140707704",
-    description: "FRONT-END DEVELOPER",
+    description: "SOFTWARE ENGINEER",
   };
 
   res.status(200).json(landingData);
