@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: [
       "http://141.11.182.146:8080", // فرانت‌اند روی سرور
-      "http://localhost:5173", // برای تست لوکال
+      "http://localhost:3000", // برای تست لوکال
     ],
     credentials: true,
   })

@@ -22,7 +22,7 @@ jobs:
           script: |
             echo "🚀 Start Backend Deployment"
 
-            cd /var/www/portfolio/
+            cd /var/www/portfolio/bck/
 
             echo "🔄 Updating repository..."
             git reset --hard HEAD
