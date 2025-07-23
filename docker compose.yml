@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  backend:
+    build: .
+    container_name: express-backend
+    restart: always
+    env_file: .env
+    ports:
+      - "9060:9060"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:6
+    container_name: mongodb
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge
