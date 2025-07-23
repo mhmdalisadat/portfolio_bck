@@ -3,7 +3,7 @@ version: "3.8"
 services:
   backend:
     build: .
-    container_name: express-backend
+    container_name: portfolio-backend
     restart: always
     env_file: .env
     ports:

@@ -21,7 +21,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "🚀 Start Backend Deployment"
-            cd /var/www/portfolio/bck/
+            cd /var/www/portfo/bck/
 
             echo "🔄 Updating repository..."
             git reset --hard HEAD
