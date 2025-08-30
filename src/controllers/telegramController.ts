@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import TelegramBot from "node-telegram-bot-api";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { Contact, IContact } from "../models/contactModel";
 
 const token = process.env.TELEGRAM_BOT_TOKEN || "";
@@ -12,10 +13,27 @@ if (!ADMIN_CHAT_ID) {
   throw new Error("ADMIN_CHAT_ID is not set in environment variables");
 }
 
-// بدون پراکسی
-const bot = new TelegramBot(token, { polling: true });
+const proxyUrl = process.env.TELEGRAM_PROXY_URL;
+let bot: TelegramBot;
+
+if (proxyUrl) {
+  // با پراکسی
+  const agent = new HttpsProxyAgent(proxyUrl);
+  bot = new TelegramBot(token, {
+    polling: true,
+    request: { agent } as any,
+  });
+} else {
+  // بدون پراکسی
+  bot = new TelegramBot(token, {
+    polling: true,
+  });
+}
 
 console.log(`Telegram bot is starting on ${process.env.SERVER_URL}`);
+console.log(
+  `Proxy configuration: ${proxyUrl ? `Using proxy: ${proxyUrl}` : "No proxy configured"}`
+);
 
 type ContactRequest = Request<
   {},
