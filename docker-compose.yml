@@ -6,7 +6,7 @@ services:
     container_name: portfolio-backend
     restart: always
     environment:
-      - PORT=9060
+      - PORT=1296
       - SERVER_URL=http://141.11.182.146:9060
       - MONGO_URI=mongodb://mongo:27017/portfolio
       - TELEGRAM_BOT_TOKEN=7396199760:AAFVE3sxUtr0sHwvptYCBQ8_qPstElCcdz4
@@ -14,7 +14,7 @@ services:
       - TELEGRAM_PROXY_URL=https://telegram.isatispooya.com
       - CORS_ORIGINS=http://141.11.182.146:8080,http://localhost:3000
     ports:
-      - "9060:9060"
+      - "1296:1296"
     depends_on:
       - mongo
     networks:

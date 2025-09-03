@@ -18,5 +18,5 @@ RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
 USER nodejs
 
-EXPOSE 9060
+EXPOSE 1296
 CMD ["node", "dist/app.js"]

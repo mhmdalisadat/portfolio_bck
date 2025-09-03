@@ -21,7 +21,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo "🚀 Start Backend Deployment"
-            cd /root/swarn/swarn-bck/
+            cd /var/pro/pro_bck/
 
             echo "🔄 Updating repository..."
             git reset --hard HEAD
